@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../notifier/overlay_entry_notifier.dart';
-import 'screem_b.dart';
-import 'screem_c.dart';
+import 'screen_b.dart';
+import 'screen_c.dart';
 
 class ScreenA extends ConsumerWidget {
   const ScreenA({super.key});
@@ -11,7 +11,7 @@ class ScreenA extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // provider
-    var overlayEntry = ref.watch(overlayEntryProvider);
+    final overlayEntryNotifier = ref.watch(overlayEntryProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Screen A'),
@@ -23,12 +23,14 @@ class ScreenA extends ConsumerWidget {
             ElevatedButton(
               child: const Text('Go to Screen B'),
               onPressed: () {
-                overlayEntry =
-                    OverlayEntry(builder: (context) => const ScreenB());
-                Overlay.of(context).insert(
-                  // providerにScreenBのOverlayEntryをセット¥
-                  overlayEntry!,
-                );
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  overlayEntryNotifier.updateOverlayEntry(
+                    context,
+                    OverlayEntry(
+                      builder: (context) => const ScreenB(),
+                    ),
+                  );
+                });
               },
             ),
             ElevatedButton(
@@ -36,7 +38,9 @@ class ScreenA extends ConsumerWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ScreenC()),
+                  MaterialPageRoute(
+                    builder: (context) => const ScreenC(),
+                  ),
                 );
               },
             ),
