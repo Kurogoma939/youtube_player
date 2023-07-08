@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/video.dart';
-import '/screens/nav_screen.dart';
+import '../domain/mini_player/mini_player_notifier.dart';
+import '../domain/video/video_notifier.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -19,15 +20,18 @@ class VideoCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final videoNotifier = ref.watch(videoNotifierProvider.notifier);
+    final miniPlayerController =
+        ref.watch(miniPlayerProvider.select((value) => value.controller));
     return GestureDetector(
       onTap: () {
         debugPrint('ビデオを選択しました');
-        ref.read(selectedVideoProvider.notifier).state = video;
-        ref
-            .read(miniPlayerControllerProvider.notifier)
-            .state
-            .animateToHeight(state: PanelState.MAX);
-        if (onTap != null) onTap!();
+        videoNotifier.selectVideo(video);
+        miniPlayerController.animateToHeight(state: PanelState.MAX);
+        // カスタムアクション
+        if (onTap != null) {
+          onTap!();
+        }
       },
       child: Column(
         children: [

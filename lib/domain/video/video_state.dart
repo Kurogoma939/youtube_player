@@ -7,6 +7,6 @@ part 'video_state.freezed.dart';
 @freezed
 class VideoState with _$VideoState {
   const factory VideoState({
-    required Video? video,
+    required Video? selectedVideo,
   }) = _VideoState;
 }

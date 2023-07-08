@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_youtube_player/domain/video/video_notifier.dart';
 import '../data/video.dart';
-import '/screens/nav_screen.dart';
+import '../domain/mini_player/mini_player_notifier.dart';
 import '/widgets/widgets.dart';
 import 'package:miniplayer/miniplayer.dart';
 
@@ -28,10 +29,12 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final miniPlayerController =
+        ref.watch(miniPlayerProvider.select((value) => value.controller));
+    final selectedVideo =
+        ref.watch(videoNotifierProvider.select((value) => value.selectedVideo));
     return GestureDetector(
-      onTap: () => ref
-          .read(miniPlayerControllerProvider)
-          .animateToHeight(state: PanelState.MAX),
+      onTap: () => miniPlayerController.animateToHeight(state: PanelState.MAX),
       child: Scaffold(
         body: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -42,8 +45,6 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
               SliverToBoxAdapter(
                 child: Consumer(
                   builder: (context, ref, _) {
-                    final selectedVideo =
-                        ref.watch(selectedVideoProvider.notifier).state;
                     return SafeArea(
                       child: Column(
                         children: [
@@ -58,8 +59,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
                               IconButton(
                                 iconSize: 30.0,
                                 icon: const Icon(Icons.keyboard_arrow_down),
-                                onPressed: () => ref
-                                    .read(miniPlayerControllerProvider)
+                                onPressed: () => miniPlayerController
                                     .animateToHeight(state: PanelState.MIN),
                               ),
                             ],
@@ -67,7 +67,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
                           const LinearProgressIndicator(
                             value: 0.4,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.red,
+                              Color.fromARGB(255, 244, 114, 54),
                             ),
                           ),
                           VideoInfo(video: selectedVideo),

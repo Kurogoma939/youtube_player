@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/video.dart';
+import 'package:flutter_youtube_player/domain/mini_player/mini_player_notifier.dart';
+import 'package:flutter_youtube_player/domain/video/video_notifier.dart';
 import '/screens/home_screen.dart';
 import 'player_screen.dart';
 import 'package:miniplayer/miniplayer.dart';
-
-final selectedVideoProvider = StateProvider<Video?>((ref) => null);
-
-final miniPlayerControllerProvider =
-    StateProvider.autoDispose<MiniplayerController>(
-  (ref) => MiniplayerController(),
-);
 
 class NavScreen extends ConsumerStatefulWidget {
   const NavScreen({super.key});
@@ -25,20 +19,20 @@ class _NavScreenState extends ConsumerState<NavScreen> {
 
   final _screens = [
     const HomeScreen(),
-    const Scaffold(body: Center(child: Text('Explore'))),
-    const Scaffold(body: Center(child: Text('Add'))),
-    const Scaffold(body: Center(child: Text('Subscriptions'))),
-    const Scaffold(body: Center(child: Text('Library'))),
+    const Scaffold(body: Center(child: Text('ショートタブ'))),
+    const Scaffold(body: Center(child: Text('動画投稿'))),
+    const Scaffold(body: Center(child: Text('登録チャンネル'))),
+    const Scaffold(body: Center(child: Text('ライブラリ'))),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final videoState = ref.watch(videoNotifierProvider);
+    final videoNotifier = ref.watch(videoNotifierProvider.notifier);
+    final miniPlayerState = ref.watch(miniPlayerProvider);
     return Scaffold(
       body: Consumer(
         builder: (context, watch, _) {
-          final selectedVideo = ref.watch(selectedVideoProvider.notifier).state;
-          final miniPlayerController =
-              ref.watch(miniPlayerControllerProvider.notifier).state;
           return Stack(
             children: _screens
                 .asMap()
@@ -53,13 +47,13 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                 .toList()
               ..add(
                 Offstage(
-                  offstage: selectedVideo == null,
+                  offstage: videoState.selectedVideo == null,
                   child: Miniplayer(
-                    controller: miniPlayerController,
+                    controller: miniPlayerState.controller,
                     minHeight: _playerMinHeight,
                     maxHeight: MediaQuery.of(context).size.height,
                     builder: (height, percentage) {
-                      if (selectedVideo == null) {
+                      if (videoState.selectedVideo == null) {
                         return const SizedBox.shrink();
                       }
 
@@ -71,7 +65,7 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                               Row(
                                 children: [
                                   Image.network(
-                                    selectedVideo.thumbnailUrl,
+                                    videoState.selectedVideo!.thumbnailUrl,
                                     height: _playerMinHeight - 4.0,
                                     width: 120.0,
                                     fit: BoxFit.cover,
@@ -86,7 +80,7 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                                         children: [
                                           Flexible(
                                             child: Text(
-                                              selectedVideo.title,
+                                              videoState.selectedVideo!.title,
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -99,7 +93,8 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                                           ),
                                           Flexible(
                                             child: Text(
-                                              selectedVideo.author.username,
+                                              videoState.selectedVideo!.author
+                                                  .username,
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -115,15 +110,15 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.play_arrow),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      debugPrint('動画再生');
+                                    },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.close),
                                     onPressed: () {
-                                      // selectedVideoProviderをnull
-                                      ref
-                                          .read(selectedVideoProvider.notifier)
-                                          .state = null;
+                                      debugPrint('ミニプレーヤー停止');
+                                      videoNotifier.unselectVideo();
                                     },
                                   ),
                                 ],
@@ -131,7 +126,7 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                               const LinearProgressIndicator(
                                 value: 0.4,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.red,
+                                  Color.fromARGB(255, 244, 114, 54),
                                 ),
                               ),
                             ],
@@ -156,27 +151,27 @@ class _NavScreenState extends ConsumerState<NavScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             activeIcon: Icon(Icons.home),
-            label: 'Home',
+            label: 'ホーム',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
-            label: 'Explore',
+            icon: Icon(Icons.play_circle_outline_outlined),
+            activeIcon: Icon(Icons.play_circle_fill_rounded),
+            label: 'ショート',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle_outline),
             activeIcon: Icon(Icons.add_circle),
-            label: 'Add',
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.subscriptions_outlined),
             activeIcon: Icon(Icons.subscriptions),
-            label: 'Subscriptions',
+            label: '登録チャンネル',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.video_library_outlined),
             activeIcon: Icon(Icons.video_library),
-            label: 'Library',
+            label: 'ライブラリ',
           ),
         ],
       ),

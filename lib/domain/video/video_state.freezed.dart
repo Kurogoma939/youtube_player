@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$VideoState {
-  Video? get video => throw _privateConstructorUsedError;
+  Video? get selectedVideo => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $VideoStateCopyWith<VideoState> get copyWith =>
@@ -29,7 +29,7 @@ abstract class $VideoStateCopyWith<$Res> {
           VideoState value, $Res Function(VideoState) then) =
       _$VideoStateCopyWithImpl<$Res, VideoState>;
   @useResult
-  $Res call({Video? video});
+  $Res call({Video? selectedVideo});
 }
 
 /// @nodoc
@@ -45,12 +45,12 @@ class _$VideoStateCopyWithImpl<$Res, $Val extends VideoState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? video = freezed,
+    Object? selectedVideo = freezed,
   }) {
     return _then(_value.copyWith(
-      video: freezed == video
-          ? _value.video
-          : video // ignore: cast_nullable_to_non_nullable
+      selectedVideo: freezed == selectedVideo
+          ? _value.selectedVideo
+          : selectedVideo // ignore: cast_nullable_to_non_nullable
               as Video?,
     ) as $Val);
   }
@@ -64,7 +64,7 @@ abstract class _$$_VideoStateCopyWith<$Res>
       __$$_VideoStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Video? video});
+  $Res call({Video? selectedVideo});
 }
 
 /// @nodoc
@@ -78,12 +78,12 @@ class __$$_VideoStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? video = freezed,
+    Object? selectedVideo = freezed,
   }) {
     return _then(_$_VideoState(
-      video: freezed == video
-          ? _value.video
-          : video // ignore: cast_nullable_to_non_nullable
+      selectedVideo: freezed == selectedVideo
+          ? _value.selectedVideo
+          : selectedVideo // ignore: cast_nullable_to_non_nullable
               as Video?,
     ));
   }
@@ -92,14 +92,14 @@ class __$$_VideoStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_VideoState implements _VideoState {
-  const _$_VideoState({required this.video});
+  const _$_VideoState({required this.selectedVideo});
 
   @override
-  final Video? video;
+  final Video? selectedVideo;
 
   @override
   String toString() {
-    return 'VideoState(video: $video)';
+    return 'VideoState(selectedVideo: $selectedVideo)';
   }
 
   @override
@@ -107,11 +107,12 @@ class _$_VideoState implements _VideoState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_VideoState &&
-            (identical(other.video, video) || other.video == video));
+            (identical(other.selectedVideo, selectedVideo) ||
+                other.selectedVideo == selectedVideo));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, video);
+  int get hashCode => Object.hash(runtimeType, selectedVideo);
 
   @JsonKey(ignore: true)
   @override
@@ -121,10 +122,11 @@ class _$_VideoState implements _VideoState {
 }
 
 abstract class _VideoState implements VideoState {
-  const factory _VideoState({required final Video? video}) = _$_VideoState;
+  const factory _VideoState({required final Video? selectedVideo}) =
+      _$_VideoState;
 
   @override
-  Video? get video;
+  Video? get selectedVideo;
   @override
   @JsonKey(ignore: true)
   _$$_VideoStateCopyWith<_$_VideoState> get copyWith =>
