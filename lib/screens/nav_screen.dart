@@ -6,6 +6,8 @@ import '/screens/home_screen.dart';
 import 'player_screen.dart';
 import 'package:miniplayer/miniplayer.dart';
 
+const double playerMinHeight = 60.0;
+
 class NavScreen extends ConsumerStatefulWidget {
   const NavScreen({super.key});
   @override
@@ -13,8 +15,6 @@ class NavScreen extends ConsumerStatefulWidget {
 }
 
 class _NavScreenState extends ConsumerState<NavScreen> {
-  static const double _playerMinHeight = 60.0;
-
   int _selectedIndex = 0;
 
   final _screens = [
@@ -29,7 +29,11 @@ class _NavScreenState extends ConsumerState<NavScreen> {
   Widget build(BuildContext context) {
     final videoState = ref.watch(videoNotifierProvider);
     final videoNotifier = ref.watch(videoNotifierProvider.notifier);
-    final miniPlayerState = ref.watch(miniPlayerProvider);
+    final miniPlayerController =
+        ref.watch(miniPlayerProvider.select((value) => value.controller));
+    final isMiniPlayerMode =
+        ref.watch(miniPlayerProvider.select((value) => value.isMiniPlayerMode));
+    final miniPlayerNotifier = ref.watch(miniPlayerProvider.notifier);
     return Scaffold(
       body: Consumer(
         builder: (context, watch, _) {
@@ -49,15 +53,27 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                 Offstage(
                   offstage: videoState.selectedVideo == null,
                   child: Miniplayer(
-                    controller: miniPlayerState.controller,
-                    minHeight: _playerMinHeight,
+                    controller: miniPlayerController,
+                    minHeight: playerMinHeight,
                     maxHeight: MediaQuery.of(context).size.height,
                     builder: (height, percentage) {
                       if (videoState.selectedVideo == null) {
                         return const SizedBox.shrink();
                       }
 
-                      if (height <= _playerMinHeight + 50.0) {
+                      // isMiniPlayerModeの切り替え
+                      // Todo: Widget内でいいがメソッド化したい
+                      if (height == playerMinHeight && !isMiniPlayerMode) {
+                        Future.delayed(const Duration(), () {
+                          miniPlayerNotifier.forceToggleMiniPlayer(true);
+                        });
+                      } else if (isMiniPlayerMode) {
+                        Future.delayed(const Duration(), () {
+                          miniPlayerNotifier.forceToggleMiniPlayer(false);
+                        });
+                      }
+
+                      if (height <= playerMinHeight + 50.0) {
                         return Container(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           child: Column(
@@ -66,7 +82,7 @@ class _NavScreenState extends ConsumerState<NavScreen> {
                                 children: [
                                   Image.network(
                                     videoState.selectedVideo!.thumbnailUrl,
-                                    height: _playerMinHeight - 4.0,
+                                    height: playerMinHeight - 4.0,
                                     width: 120.0,
                                     fit: BoxFit.cover,
                                   ),
@@ -144,7 +160,15 @@ class _NavScreenState extends ConsumerState<NavScreen> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        onTap: (i) => setState(() => _selectedIndex = i),
+        onTap: (i) => setState(() {
+          // 全画面モードであればミニプレーヤーにしてから遷移
+          debugPrint(miniPlayerController.value!.height.toString());
+          if (!isMiniPlayerMode) {
+            miniPlayerController.animateToHeight(state: PanelState.MIN);
+          }
+
+          _selectedIndex = i;
+        }),
         selectedFontSize: 10.0,
         unselectedFontSize: 10.0,
         items: const [

@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$MiniPlayerState {
   MiniplayerController get controller => throw _privateConstructorUsedError;
+  bool get isMiniPlayerMode => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MiniPlayerStateCopyWith<MiniPlayerState> get copyWith =>
@@ -29,7 +30,7 @@ abstract class $MiniPlayerStateCopyWith<$Res> {
           MiniPlayerState value, $Res Function(MiniPlayerState) then) =
       _$MiniPlayerStateCopyWithImpl<$Res, MiniPlayerState>;
   @useResult
-  $Res call({MiniplayerController controller});
+  $Res call({MiniplayerController controller, bool isMiniPlayerMode});
 }
 
 /// @nodoc
@@ -46,12 +47,17 @@ class _$MiniPlayerStateCopyWithImpl<$Res, $Val extends MiniPlayerState>
   @override
   $Res call({
     Object? controller = null,
+    Object? isMiniPlayerMode = null,
   }) {
     return _then(_value.copyWith(
       controller: null == controller
           ? _value.controller
           : controller // ignore: cast_nullable_to_non_nullable
               as MiniplayerController,
+      isMiniPlayerMode: null == isMiniPlayerMode
+          ? _value.isMiniPlayerMode
+          : isMiniPlayerMode // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -64,7 +70,7 @@ abstract class _$$_MiniPlayerStateCopyWith<$Res>
       __$$_MiniPlayerStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({MiniplayerController controller});
+  $Res call({MiniplayerController controller, bool isMiniPlayerMode});
 }
 
 /// @nodoc
@@ -79,12 +85,17 @@ class __$$_MiniPlayerStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? controller = null,
+    Object? isMiniPlayerMode = null,
   }) {
     return _then(_$_MiniPlayerState(
       controller: null == controller
           ? _value.controller
           : controller // ignore: cast_nullable_to_non_nullable
               as MiniplayerController,
+      isMiniPlayerMode: null == isMiniPlayerMode
+          ? _value.isMiniPlayerMode
+          : isMiniPlayerMode // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -92,14 +103,18 @@ class __$$_MiniPlayerStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_MiniPlayerState implements _MiniPlayerState {
-  const _$_MiniPlayerState({required this.controller});
+  const _$_MiniPlayerState(
+      {required this.controller, this.isMiniPlayerMode = false});
 
   @override
   final MiniplayerController controller;
+  @override
+  @JsonKey()
+  final bool isMiniPlayerMode;
 
   @override
   String toString() {
-    return 'MiniPlayerState(controller: $controller)';
+    return 'MiniPlayerState(controller: $controller, isMiniPlayerMode: $isMiniPlayerMode)';
   }
 
   @override
@@ -108,11 +123,13 @@ class _$_MiniPlayerState implements _MiniPlayerState {
         (other.runtimeType == runtimeType &&
             other is _$_MiniPlayerState &&
             (identical(other.controller, controller) ||
-                other.controller == controller));
+                other.controller == controller) &&
+            (identical(other.isMiniPlayerMode, isMiniPlayerMode) ||
+                other.isMiniPlayerMode == isMiniPlayerMode));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, controller);
+  int get hashCode => Object.hash(runtimeType, controller, isMiniPlayerMode);
 
   @JsonKey(ignore: true)
   @override
@@ -123,10 +140,13 @@ class _$_MiniPlayerState implements _MiniPlayerState {
 
 abstract class _MiniPlayerState implements MiniPlayerState {
   const factory _MiniPlayerState(
-      {required final MiniplayerController controller}) = _$_MiniPlayerState;
+      {required final MiniplayerController controller,
+      final bool isMiniPlayerMode}) = _$_MiniPlayerState;
 
   @override
   MiniplayerController get controller;
+  @override
+  bool get isMiniPlayerMode;
   @override
   @JsonKey(ignore: true)
   _$$_MiniPlayerStateCopyWith<_$_MiniPlayerState> get copyWith =>

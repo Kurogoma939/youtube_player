@@ -7,5 +7,6 @@ part 'mini_player_state.freezed.dart';
 class MiniPlayerState with _$MiniPlayerState {
   const factory MiniPlayerState({
     required MiniplayerController controller,
+    @Default(false) bool isMiniPlayerMode,
   }) = _MiniPlayerState;
 }

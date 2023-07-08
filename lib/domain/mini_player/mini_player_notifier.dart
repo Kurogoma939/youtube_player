@@ -14,4 +14,9 @@ class MiniPlayerNotifier extends StateNotifier<MiniPlayerState> {
             controller: MiniplayerController(),
           ),
         );
+
+  // フラグを切り替える
+  void forceToggleMiniPlayer(bool isMiniPlayerMode) {
+    state = state.copyWith(isMiniPlayerMode: isMiniPlayerMode);
+  }
 }
