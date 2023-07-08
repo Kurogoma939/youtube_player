@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ScreenC extends StatelessWidget {
-  const ScreenC({super.key});
+class ScreenZ extends StatelessWidget {
+  const ScreenZ({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: const Text('Screen C'),
+        title: const Text('Screen Z'),
       ),
       body: const Center(
-        child: Text('Dummy Text'),
+        child: Text('Welcome to Screen Z'),
       ),
     );
   }

@@ -14,6 +14,7 @@ class ScreenA extends ConsumerWidget {
     final overlayEntryNotifier = ref.watch(overlayEntryProvider.notifier);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.amber,
         title: const Text('Screen A'),
       ),
       body: Center(
@@ -36,8 +37,7 @@ class ScreenA extends ConsumerWidget {
             ElevatedButton(
               child: const Text('Go to Screen C'),
               onPressed: () {
-                Navigator.push(
-                  context,
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const ScreenC(),
                   ),
