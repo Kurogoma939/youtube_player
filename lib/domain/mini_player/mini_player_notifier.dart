@@ -3,7 +3,7 @@ import 'package:flutter_youtube_player/domain/mini_player/mini_player_state.dart
 import 'package:miniplayer/miniplayer.dart';
 
 final miniPlayerProvider =
-    StateNotifierProvider.autoDispose<MiniPlayerNotifier, MiniPlayerState>(
+    StateNotifierProvider<MiniPlayerNotifier, MiniPlayerState>(
   (ref) => MiniPlayerNotifier(),
 );
 

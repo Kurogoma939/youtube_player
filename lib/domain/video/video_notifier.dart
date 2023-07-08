@@ -3,8 +3,7 @@ import 'package:flutter_youtube_player/domain/video/video_state.dart';
 
 import '../../data/video.dart';
 
-final videoNotifierProvider =
-    StateNotifierProvider.autoDispose<VideoNotifier, VideoState>(
+final videoNotifierProvider = StateNotifierProvider<VideoNotifier, VideoState>(
   (ref) => VideoNotifier(),
 );
 

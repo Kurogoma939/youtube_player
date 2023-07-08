@@ -34,128 +34,128 @@ class _NavScreenState extends ConsumerState<NavScreen> {
     final isMiniPlayerMode =
         ref.watch(miniPlayerProvider.select((value) => value.isMiniPlayerMode));
     final miniPlayerNotifier = ref.watch(miniPlayerProvider.notifier);
+    double screenHeight = MediaQuery.of(context).size.height;
+    double triggerHeight = screenHeight / 5;
     return Scaffold(
-      body: Consumer(
-        builder: (context, watch, _) {
-          return Stack(
-            children: _screens
-                .asMap()
-                .map((i, screen) => MapEntry(
-                      i,
-                      Offstage(
-                        offstage: _selectedIndex != i,
-                        child: screen,
-                      ),
-                    ))
-                .values
-                .toList()
-              ..add(
-                Offstage(
-                  offstage: videoState.selectedVideo == null,
-                  child: Miniplayer(
-                    controller: miniPlayerController,
-                    minHeight: playerMinHeight,
-                    maxHeight: MediaQuery.of(context).size.height,
-                    builder: (height, percentage) {
-                      if (videoState.selectedVideo == null) {
-                        return const SizedBox.shrink();
-                      }
+      body: Stack(
+        children: _screens
+            .asMap()
+            .map((i, screen) => MapEntry(
+                  i,
+                  Offstage(
+                    offstage: _selectedIndex != i,
+                    child: screen,
+                  ),
+                ))
+            .values
+            .toList()
+          ..add(
+            Offstage(
+              offstage: videoState.selectedVideo == null,
+              child: Miniplayer(
+                controller: miniPlayerController,
+                minHeight: playerMinHeight,
+                maxHeight: MediaQuery.of(context).size.height,
+                onDismiss: () {
+                  debugPrint('onDismissed');
+                },
+                builder: (height, percentage) {
+                  if (videoState.selectedVideo == null) {
+                    return const SizedBox.shrink();
+                  }
 
-                      // isMiniPlayerModeの切り替え
-                      // Todo: Widget内でいいがメソッド化したい
-                      if (height == playerMinHeight && !isMiniPlayerMode) {
-                        Future.delayed(const Duration(), () {
-                          miniPlayerNotifier.forceToggleMiniPlayer(true);
-                        });
-                      } else if (isMiniPlayerMode) {
-                        Future.delayed(const Duration(), () {
-                          miniPlayerNotifier.forceToggleMiniPlayer(false);
-                        });
-                      }
+                  // isMiniPlayerModeの切り替え
+                  // Todo: Widget内でいいがメソッド化したい
+                  if (height == playerMinHeight && !isMiniPlayerMode) {
+                    Future.delayed(const Duration(), () {
+                      miniPlayerNotifier.forceToggleMiniPlayer(true);
+                    });
+                  } else if (isMiniPlayerMode) {
+                    Future.delayed(const Duration(), () {
+                      miniPlayerNotifier.forceToggleMiniPlayer(false);
+                    });
+                  }
 
-                      if (height <= playerMinHeight + 50.0) {
-                        return Container(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          child: Column(
+                  if (height <= playerMinHeight + 50.0) {
+                    return Container(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Image.network(
-                                    videoState.selectedVideo!.thumbnailUrl,
-                                    height: playerMinHeight - 4.0,
-                                    width: 120.0,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Flexible(
-                                            child: Text(
-                                              videoState.selectedVideo!.title,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                            ),
-                                          ),
-                                          Flexible(
-                                            child: Text(
-                                              videoState.selectedVideo!.author
-                                                  .username,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall!
-                                                  .copyWith(
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.play_arrow),
-                                    onPressed: () {
-                                      debugPrint('動画再生');
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () {
-                                      debugPrint('ミニプレーヤー停止');
-                                      videoNotifier.unselectVideo();
-                                    },
-                                  ),
-                                ],
+                              Image.network(
+                                videoState.selectedVideo!.thumbnailUrl,
+                                height: playerMinHeight - 4.0,
+                                width: 120.0,
+                                fit: BoxFit.cover,
                               ),
-                              const LinearProgressIndicator(
-                                value: 0.4,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Color.fromARGB(255, 244, 114, 54),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          videoState.selectedVideo!.title,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          videoState
+                                              .selectedVideo!.author.username,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                  fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.play_arrow),
+                                onPressed: () {
+                                  debugPrint('動画再生');
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.close),
+                                onPressed: () {
+                                  debugPrint('ミニプレーヤー停止');
+                                  videoNotifier.unselectVideo();
+                                },
                               ),
                             ],
                           ),
-                        );
-                      }
-                      return const PlayerScreen();
-                    },
-                  ),
-                ),
+                          const LinearProgressIndicator(
+                            value: 0.4,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Color.fromARGB(255, 244, 114, 54),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const PlayerScreen();
+                },
               ),
-          );
-        },
+            ),
+          ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
