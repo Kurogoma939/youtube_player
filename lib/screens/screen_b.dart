@@ -7,6 +7,9 @@ import '../notifier/miniplayer_percentage_notifier.dart';
 // Miniplayerの高さ
 const _miniplayerHeight = 80.0;
 
+final ValueNotifier<double> playerExpandProgress =
+    ValueNotifier(_miniplayerHeight + kBottomNavigationBarHeight);
+
 class ScreenB extends ConsumerWidget {
   const ScreenB({super.key});
 
@@ -23,6 +26,7 @@ class ScreenB extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Miniplayer(
+        valueNotifier: playerExpandProgress,
         controller: miniplayerController,
         minHeight: _miniplayerHeight + kBottomNavigationBarHeight,
         maxHeight: MediaQuery.of(context).size.height -
@@ -35,7 +39,7 @@ class ScreenB extends ConsumerWidget {
           });
           return Scaffold(
             backgroundColor: Colors.transparent,
-            body: percentage < 0.3
+            body: percentage < 0.25
                 ? _MiniplayerView(
                     miniplayerController: miniplayerController,
                   )
