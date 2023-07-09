@@ -6,13 +6,17 @@ import '../domain/mini_player/mini_player_notifier.dart';
 import '/widgets/widgets.dart';
 import 'package:miniplayer/miniplayer.dart';
 
-class PlayerScreen extends ConsumerStatefulWidget {
-  const PlayerScreen({super.key});
+///
+/// 全画面表示状態の縦画面再生
+///
+class PlayerFullScreen extends ConsumerStatefulWidget {
+  const PlayerFullScreen({super.key});
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PlayerScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PlayerFullScreenState();
 }
 
-class _PlayerScreenState extends ConsumerState<PlayerScreen> {
+class _PlayerFullScreenState extends ConsumerState<PlayerFullScreen> {
   ScrollController? _scrollController;
 
   @override
@@ -27,12 +31,54 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
     super.dispose();
   }
 
+  // 端末回転の方向により、縦画面か横画面かを判定する
+  Orientation get _deviceOrientation {
+    return MediaQuery.of(context).orientation;
+  }
+
   @override
   Widget build(BuildContext context) {
     final miniPlayerController =
         ref.watch(miniPlayerProvider.select((value) => value.controller));
     final selectedVideo =
         ref.watch(videoNotifierProvider.select((value) => value.selectedVideo));
+
+    final Orientation deviceOrientation = MediaQuery.of(context).orientation;
+
+    if (deviceOrientation == Orientation.landscape) {
+      return _LandscapeScreen(
+        scrollController: _scrollController,
+        selectedVideo: selectedVideo,
+        miniPlayerController: miniPlayerController,
+      );
+    } else if (deviceOrientation == Orientation.portrait) {
+      return _PortraitScreen(
+        scrollController: _scrollController,
+        selectedVideo: selectedVideo,
+        miniPlayerController: miniPlayerController,
+      );
+    } else {
+      return Container();
+    }
+  }
+}
+
+///
+/// 縦画面再生
+///
+class _PortraitScreen extends StatelessWidget {
+  const _PortraitScreen({
+    required ScrollController? scrollController,
+    required this.selectedVideo,
+    required this.miniPlayerController,
+  }) : _scrollController = scrollController;
+
+  final ScrollController? _scrollController;
+  final Video? selectedVideo;
+  final MiniplayerController miniPlayerController;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -68,7 +114,7 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
                             Color.fromARGB(255, 244, 114, 54),
                           ),
                         ),
-                        VideoInfo(video: selectedVideo),
+                        VideoInfo(video: selectedVideo!),
                       ],
                     ),
                   );
@@ -93,6 +139,57 @@ class _PlayerScreenState extends ConsumerState<PlayerScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+///
+/// 横画面再生
+///
+class _LandscapeScreen extends StatelessWidget {
+  const _LandscapeScreen({
+    required ScrollController? scrollController,
+    required this.selectedVideo,
+    required this.miniPlayerController,
+  });
+
+  final Video? selectedVideo;
+  final MiniplayerController miniPlayerController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Image.network(
+                    selectedVideo!.thumbnailUrl,
+                    height: MediaQuery.sizeOf(context).height,
+                    width: MediaQuery.sizeOf(context).width,
+                    fit: BoxFit.cover,
+                  ),
+                  IconButton(
+                    iconSize: 30.0,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    onPressed: () => miniPlayerController.animateToHeight(
+                        state: PanelState.MIN),
+                  ),
+                ],
+              ),
+              const LinearProgressIndicator(
+                value: 0.4,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color.fromARGB(255, 244, 114, 54),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
