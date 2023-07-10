@@ -1,16 +1,6 @@
-# flutter_youtube_player
+## 現状デモ
+---
 
-A new Flutter project.
 
-## Getting Started
+https://github.com/Kurogoma939/youtube_player/assets/67848399/f50259f9-f9b0-4382-95ad-51abbcffe27a
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
